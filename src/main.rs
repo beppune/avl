@@ -1,6 +1,6 @@
 use std::mem;
 use std::cmp;
-use std::collections::VecDeq;
+use std::collections::VecDeque;
 
 enum Tree {
     Empty,
@@ -60,7 +60,7 @@ impl Tree {
     }
 
     fn breadth(&self) {
-       let mut Q : VecDeq<Self> = VecDeq::new();
+       let mut Q : VecDeque<&Self> = VecDeque::new();
 
        if let Tree::More(_) = self {
            Q.push_back(self);
