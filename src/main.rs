@@ -1,22 +1,41 @@
 
+use std::cmp;
+use std::mem;
+
 struct Node {
-    value: i32,
-    left: SubTree,
-    right: SubTree,
+    elem: i32,
+    left: Tree,
+    right: Tree,
 }
 
-type SubTree = Option<Box<Node>>;
-
-struct Dict {
-    root: SubTree,
+enum Tree {
+    Empty,
+    More(Box<Node>),
 }
 
-impl Dict {
-    fn new() -> Self {
-        Dict { root: None }
+impl Tree {
+
+    pub fn new() -> Self {
+        Tree::Empty
     }
+
+    pub fn put(&mut self, value: i32) {
+
+
+    }
+
+    pub fn height(&self) -> usize {
+        match self {
+            Self::Empty => 0,
+            Self::More(n) => 1 + cmp::max( n.right.height(), n.left.height() )
+        }
+    }
+
 }
 
 fn main() {
-    println!("Hello, world!");
+
+    let mut tree = Tree::new();
+    println!("Height: {}", tree.height() );
+    
 }
