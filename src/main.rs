@@ -1,64 +1,62 @@
 
-use std::cmp;
-use std::mem;
-
-struct Node {
-    value: i32,
-    left: Tree,
-    right: Tree,
+#[derive(Debug)]
+struct Tree {
+    root: SubTree,
+    size: usize,
 }
 
-enum Tree {
-    Empty,
-    More(Box<Node>),
+type SubTree = Option<Box<Node>>;
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    right: SubTree,
+    left: SubTree,
 }
 
 impl Tree {
 
-    pub fn new() -> Self {
-        Tree::Empty
+    fn new() -> Self {
+        Tree{ root: None, size: 0 }
     }
-
-    pub fn put(&mut self, value: i32) {
-
-        while let Tree::More(node) = self {
-
-            if node.value < value {
-                node = node.left;
-            } else {
-                node = node.right;
-            }
-
+    
+    fn put(&mut self, value:i32) -> bool {
+        let mut current = &mut self.root;
+        while let Some(box_node) = current {
+            
+            if box_node.value > 0 { current = &mut box_node.right; }
+            else if box_node.value < 0 { current = &mut box_node.left; }
+            else { return false; }
+            
         }
-
-        *node = Tree::More( Self::make_node(value) );
-
-    }
-
-    fn make_node(value:i32) -> Box<Node> {
-        let more = Box::new(Node {
+        
+        *current = Some(Box::new(Node{
             value,
-            right: Tree::Empty,
-            left: Tree::Empty,
-        });
-        Box::new( *more )
-    }
-
-    pub fn height(&self) -> usize {
-        match self {
-            Self::Empty => 0,
-            Self::More(n) => 1 + cmp::max( n.right.height(), n.left.height() )
-        }
+            right:None,
+            left:None,
+        }));
+        
+        self.size += 1;
+    
+        true
     }
 
 }
 
-fn main() {
+#[cfg(test)]
+mod test {
 
-    let mut tree = Tree::new();
-    tree.put(12);
-    tree.put(2);
-    tree.put(1);
-    println!("Height: {}", tree.height() );
+    use super::*;
+
+    #[test]
+    fn test1() {
+        
+        let mut tree = Tree::new();
+        tree.put(12);
+        tree.put(15);
+        tree.put(9);
+        assert!( tree.size == 3 );
+        
+    }
     
 }
