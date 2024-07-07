@@ -1,3 +1,4 @@
+use std::cmp;
 
 #[derive(Debug)]
 struct Tree {
@@ -16,16 +17,16 @@ struct Node {
 
 impl Tree {
 
-    fn new() -> Self {
+    pub fn new() -> Self {
         Tree{ root: None, size: 0 }
     }
     
-    fn put(&mut self, value:i32) -> bool {
+    pub fn put(&mut self, value:i32) -> bool {
         let mut current = &mut self.root;
         while let Some(box_node) = current {
             
-            if box_node.value > 0 { current = &mut box_node.right; }
-            else if box_node.value < 0 { current = &mut box_node.left; }
+            if box_node.value < value { current = &mut box_node.right; }
+            else if box_node.value > value { current = &mut box_node.left; }
             else { return false; }
             
         }
@@ -39,6 +40,19 @@ impl Tree {
         self.size += 1;
     
         true
+    }
+
+    pub fn height(&mut self) -> usize {
+
+        fn h(sub:&SubTree) -> usize {
+            match sub {
+                Some(boxed) => 1 + cmp::max( h(&boxed.left), h(&boxed.right) ),
+                None => 0,
+            }
+        }
+
+        h(&self.root)
+
     }
 
 }
@@ -55,7 +69,9 @@ mod test {
         tree.put(12);
         tree.put(15);
         tree.put(9);
-        assert!( tree.size == 3 );
+        println!("Height: {}", tree.height());
+        assert!( tree.height() == 2 );
+        dbg!(tree.root);
         
     }
     
