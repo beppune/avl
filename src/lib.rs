@@ -1,6 +1,10 @@
 use std::cmp;
 use std::mem;
 
+fn print_type_of<T>(_: &T) {
+    println!("{}", std::any::type_name::<T>())
+}
+
 #[derive(Debug)]
 struct Tree {
     root: SubTree,
@@ -82,25 +86,21 @@ impl Tree {
 
     pub fn rotate(&mut self) {
 
-        let current = &mut self.root;
+        let A = &mut self.root;
 
-        let b = Self::bf(current);
+        let b = Self::bf(A);
 
         match b {
             Ballance::RightHeavy => {
                 dbg!(b);
             },
             Ballance::LeftHeavy => {
-                dbg!(b);
-                if let Some(boxed) = current {
+                if let Some(boxed) = A {
                     match Self::bf(&boxed.left) {
                         Ballance::LeftHeavy => {
                             println!("Single Right Rotation");
-                            // if boxed.left has a right tree T3, detach it and save it
-                            // replace current with boxed.left and save current node
-                            // attach current node to boxed.right
-                            // if T3 is not none attach it to boxed.right
-
+                            let B = &mut boxed.left;
+                            print_type_of(B);
 
                         },
                         Ballance::RightHeavy => {
@@ -133,7 +133,7 @@ mod test {
         let mut tree = Tree::new();
         tree.put(15);
         tree.put(11);
-        tree.put(12);
+        tree.put(10);
         tree.rotate();
         assert!( tree.height() == 3 );
 
