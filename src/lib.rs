@@ -1,4 +1,5 @@
 use std::cmp;
+use std::mem;
 
 #[derive(Debug)]
 struct Tree {
@@ -15,12 +16,11 @@ struct Node {
     left: SubTree,
 }
 
+#[derive(Debug)]
 enum Ballance{
     Ballanced,
     LeftHeavy,
-    //LeftRightHeavy,
     RightHeavy,
-    //RightLeftHeavy,
 }
 
 impl Tree {
@@ -63,30 +63,59 @@ impl Tree {
         }
     }
 
-    fn bf(sub:&SubTree) -> Ballance {
+    pub fn bf(sub: &SubTree) -> Ballance {
 
         match sub {
+            None => Ballance::Ballanced,
             Some(boxed) => {
                 let b = Self::h(&boxed.left) as i32 - Self::h(&boxed.right) as i32;
+
                 match b {
-                    0 => Ballance::Ballanced,
                     _ if b > 0 => Ballance::LeftHeavy,
                     _ if b < 0 => Ballance::RightHeavy,
-                    _ => panic!("ballance value: {}", b),
+                    _ => Ballance::Ballanced,
                 }
             }
-            None => Ballance::Ballanced,
         }
 
     }
 
-    fn rotate(sub:&SubTree) {
+    pub fn rotate(&mut self) {
 
-        let b = Self::bf(sub);
+        let current = &mut self.root;
+
+        let b = Self::bf(current);
+
         match b {
-            Ballance::LeftHeavy => println!("LeftHeavy"),
-            Ballance::RightHeavy => println!("RightHeavy"),
-            Ballance::Ballanced => println!("Ballanced"),
+            Ballance::RightHeavy => {
+                dbg!(b);
+            },
+            Ballance::LeftHeavy => {
+                dbg!(b);
+                if let Some(boxed) = current {
+                    match Self::bf(&boxed.left) {
+                        Ballance::LeftHeavy => {
+                            println!("Single Right Rotation");
+                            // if boxed.left has a right tree T3, detach it and save it
+                            // replace current with boxed.left and save current node
+                            // attach current node to boxed.right
+                            // if T3 is not none attach it to boxed.right
+
+
+                        },
+                        Ballance::RightHeavy => {
+                            println!("Double Left-Right Rotation");
+                        },
+                        _ => {
+                            //do nothing
+                        }
+                    }
+                }
+            },
+            Ballance::Ballanced => {
+                dbg!(b);
+                //do nothing
+            }
         }
 
     }
@@ -102,12 +131,11 @@ mod test {
     fn test1() {
 
         let mut tree = Tree::new();
-        tree.put(12);
         tree.put(15);
-        tree.put(9);
-        println!("Height: {}", tree.height());
-        assert!( tree.height() == 2 );
-        dbg!(tree.root);
+        tree.put(11);
+        tree.put(12);
+        tree.rotate();
+        assert!( tree.height() == 3 );
 
     }
 
