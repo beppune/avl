@@ -100,6 +100,7 @@ impl Tree {
                         Ballance::LeftHeavy => {
                             println!("Single Right Rotation");
                             let B = &mut boxed.left;
+                            let T3 = mem::replace( &mut B.as_mut().unwrap().right, None);
                             print_type_of(B);
 
                         },
