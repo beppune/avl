@@ -86,36 +86,33 @@ impl Tree {
 
     pub fn rotate(&mut self) {
 
-        let A = &mut self.root;
+        let ab: Ballance;
+        let bb: Ballance;
 
-        let b = Self::bf(A);
+        {
+            ab = Self::bf(&self.root);
 
-        match b {
-            Ballance::RightHeavy => {
-                dbg!(b);
-            },
+            match ab {
+                Ballance::LeftHeavy => {
+                    bb = Self::bf( &self.root.as_ref().unwrap().left );
+                },
+                Ballance::RightHeavy => {
+                    bb = Self::bf( &self.root.as_ref().unwrap().right );
+                },
+                Ballance::Ballanced =>  { return; }
+
+            }
+        }
+
+        let A: &mut SubTree;
+
+        match ab {
             Ballance::LeftHeavy => {
-                if let Some(boxed) = A {
-                    match Self::bf(&boxed.left) {
-                        Ballance::LeftHeavy => {
-                            println!("Single Right Rotation");
-                            let B = &mut boxed.left;
-                            let T3 = mem::replace( &mut B.as_mut().unwrap().right, None);
-                            print_type_of(B);
+                match bb {
+                    Ballance::LeftHeavy => {
 
-                        },
-                        Ballance::RightHeavy => {
-                            println!("Double Left-Right Rotation");
-                        },
-                        _ => {
-                            //do nothing
-                        }
                     }
                 }
-            },
-            Ballance::Ballanced => {
-                dbg!(b);
-                //do nothing
             }
         }
 
