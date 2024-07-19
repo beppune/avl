@@ -104,17 +104,31 @@ impl Tree {
             }
         }
 
-        let A: &mut SubTree;
-
         match ab {
             Ballance::LeftHeavy => {
                 match bb {
                     Ballance::LeftHeavy => {
 
-                    }
+                        let A: &mut SubTree = &mut self.root;
+                        let T3: SubTree = mem::replace( &mut A.as_mut().unwrap().right, None);
+
+                    },
+                    Ballance::RightHeavy => {},
+                    Ballance::Ballanced => {},
                 }
-            }
+            },
+            Ballance::RightHeavy => {
+                match bb {
+                    Ballance::LeftHeavy => {
+                    },
+                    Ballance::RightHeavy => {},
+                    Ballance::Ballanced => {},
+                }
+            },
+            Ballance::Ballanced => {}
+ 
         }
+        unimplemented!();
 
     }
 
