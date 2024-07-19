@@ -105,23 +105,24 @@ impl Tree {
 
         let ab: Ballance;
         let bb: Ballance;
+        
+        let A = &mut self.root;
 
         {
-            ab = Self::bf(&self.root);
+            ab = Self::bf(A);
 
             match ab {
                 Ballance::LeftHeavy => {
-                    bb = Self::bf( &self.root.as_ref().unwrap().left );
+                    bb = Self::bf( &A.as_ref().unwrap().left );
                 },
                 Ballance::RightHeavy => {
-                    bb = Self::bf( &self.root.as_ref().unwrap().right );
+                    bb = Self::bf( &A.as_ref().unwrap().right );
                 },
                 Ballance::Ballanced =>  { return; }
 
             }
         }
 
-        let A = &mut self.root;
         match ab {
             Ballance::LeftHeavy => {
                 match bb {
@@ -131,6 +132,9 @@ impl Tree {
 
                     },
                     Ballance::RightHeavy => {
+                        Self::rotate_left( &mut A.as_mut().unwrap().left );
+                        Self::rotate_right( A );
+
 
                     },
                     Ballance::Ballanced => {},
@@ -139,11 +143,12 @@ impl Tree {
             Ballance::RightHeavy => {
                 match bb {
                     Ballance::LeftHeavy => {
+                        Self::rotate_right(&mut A.as_mut().unwrap().right );
+                        Self::rotate_left( A );
+                        dbg!(A);
                     },
                     Ballance::RightHeavy => {
                         Self::rotate_left( A );
-
-                        dbg!(A);
                     },
                     Ballance::Ballanced => {},
                 }
@@ -166,8 +171,8 @@ mod test {
 
         let mut tree = Tree::new();
         tree.put(11);
-        tree.put(13);
         tree.put(15);
+        tree.put(13);
         tree.rotate();
         assert!( true );
 
